@@ -51,3 +51,12 @@ INSERT INTO visits VALUES (1, 7, '2013-01-01', 'rabies shot');
 INSERT INTO visits VALUES (2, 8, '2013-01-02', 'rabies shot');
 INSERT INTO visits VALUES (3, 8, '2013-01-03', 'neutered');
 INSERT INTO visits VALUES (4, 7, '2013-01-04', 'spayed');
+
+INSERT INTO appointment_statuses VALUES (1, 'scheduled');
+INSERT INTO appointment_statuses VALUES (2, 'canceled');
+INSERT INTO appointment_statuses VALUES (3, 'visited');
+
+INSERT INTO appointments VALUES (1, 1, 1, 1, '2018-10-22 08:00:00', '2018-10-22 08:30:00');
+INSERT INTO appointments VALUES (2, 1, 1, 1, '2018-10-22 08:30:00', '2018-10-22 09:00:00');
+INSERT INTO appointments VALUES (3, 1, 1, 1, '2018-10-22 12:00:00', '2018-10-22 13:30:00');
+INSERT INTO appointments VALUES (4, 1, 1, 1, '2018-10-22 13:00:00', '2018-10-22 13:30:00');

@@ -29,6 +29,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PropertyComparator;
 import org.springframework.core.style.ToStringCreator;
@@ -58,6 +59,10 @@ public class Owner extends Person {
     @Digits(fraction = 0, integer = 10)
     private String telephone;
 
+    // Is there a better way to do this? I mean ignore the field for JSON
+    // Only during serialization in the Controller for example?
+    // Some use cases may need to ignore this whereas others may not
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
     private Set<Pet> pets;
 

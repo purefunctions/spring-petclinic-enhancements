@@ -15,6 +15,8 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import org.springframework.http.MediaType;
+import org.springframework.samples.petclinic.appointment.Appointment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
@@ -105,5 +107,4 @@ class PetController {
             return "redirect:/owners/{ownerId}";
         }
     }
-
 }

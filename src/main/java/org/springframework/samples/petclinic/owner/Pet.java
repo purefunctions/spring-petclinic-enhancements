@@ -23,18 +23,13 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PropertyComparator;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.samples.petclinic.appointment.Appointment;
 import org.springframework.samples.petclinic.model.NamedEntity;
 import org.springframework.samples.petclinic.visit.Visit;
 
@@ -63,6 +58,10 @@ public class Pet extends NamedEntity {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "petId", fetch = FetchType.EAGER)
     private Set<Visit> visits = new LinkedHashSet<>();
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pet", fetch = FetchType.LAZY)
+    private List<Appointment> appointments = new ArrayList<>();
 
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
@@ -110,5 +109,4 @@ public class Pet extends NamedEntity {
         getVisitsInternal().add(visit);
         visit.setPetId(this.getId());
     }
-
 }

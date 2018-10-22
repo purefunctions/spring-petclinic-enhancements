@@ -5,6 +5,8 @@ DROP TABLE visits IF EXISTS;
 DROP TABLE pets IF EXISTS;
 DROP TABLE types IF EXISTS;
 DROP TABLE owners IF EXISTS;
+DROP TABLE appointment_statuses IF EXISTS;
+DROP TABLE appointments IF EXISTS;
 
 
 CREATE TABLE vets (
@@ -62,3 +64,27 @@ CREATE TABLE visits (
 );
 ALTER TABLE visits ADD CONSTRAINT fk_visits_pets FOREIGN KEY (pet_id) REFERENCES pets (id);
 CREATE INDEX visits_pet_id ON visits (pet_id);
+
+CREATE TABLE appointment_statuses (
+  id   INTEGER IDENTITY PRIMARY KEY,
+  name VARCHAR(80)
+);
+CREATE INDEX appointment_statuses_name ON appointment_statuses (name);
+
+CREATE TABLE appointments (
+  id          INTEGER IDENTITY PRIMARY KEY,
+  pet_id      INTEGER NOT NULL,
+  vet_id      INTEGER NOT NULL,
+  status_id   INTEGER NOT NULL,
+  start_time  TIMESTAMP,
+  end_time    TIMESTAMP
+);
+ALTER TABLE appointments ADD CONSTRAINT fk_appointments_pets FOREIGN KEY (pet_id) REFERENCES pets (id);
+ALTER TABLE appointments ADD CONSTRAINT fk_appointments_vets FOREIGN KEY (vet_id) REFERENCES vets (id);
+ALTER TABLE appointments ADD CONSTRAINT fk_appointments_appointment_statuses FOREIGN KEY (status_id) REFERENCES appointment_statuses (id);
+ALTER TABLE appointments ADD CONSTRAINT uq_appointments_vet_id_start_time UNIQUE (vet_id, start_time);
+ALTER TABLE appointments ADD CONSTRAINT uq_appointments_pet_id_start_time UNIQUE (pet_id, start_time);
+CREATE INDEX appointments_start_time ON appointments (start_time);
+CREATE INDEX appointments_end_time ON appointments (end_time);
+
+

@@ -15,19 +15,18 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author Juergen Hoeller
@@ -74,7 +73,7 @@ class OwnerController {
         return "owners/findOwners";
     }
 
-    @GetMapping("/owners")
+    @GetMapping(value = "/owners", produces = MediaType.TEXT_HTML_VALUE)
     public String processFindForm(Owner owner, BindingResult result, Map<String, Object> model) {
 
         // allow parameterless GET request for /owners to return all records
@@ -97,6 +96,17 @@ class OwnerController {
             model.put("selections", results);
             return "owners/ownersList";
         }
+    }
+
+    @GetMapping(value = "/api/v1/owners", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Collection<Owner> getByLastName(
+        @RequestParam("lastName") Optional<String> lastName
+    ) {
+        if (lastName.isPresent()) {
+            return this.owners.findByLastName(lastName.get());
+        }
+        return this.owners.findByLastName("");
     }
 
     @GetMapping("/owners/{ownerId}/edit")

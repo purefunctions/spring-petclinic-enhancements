@@ -43,4 +43,8 @@ public interface VetRepository extends Repository<Vet, Integer> {
     Collection<Vet> findAll() throws DataAccessException;
 
 
+    @Transactional(readOnly = true)
+    Vet findById(Integer id);
+
+    void save(Vet vet);
 }
