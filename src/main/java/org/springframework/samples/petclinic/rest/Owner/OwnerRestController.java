@@ -19,9 +19,8 @@ public class OwnerRestController {
     }
 
     @GetMapping(value = "/api/v1/owners", produces = MediaType.APPLICATION_JSON_VALUE)
-    Collection<Owner> getOwnersByLastName(@RequestParam("lastName") Optional<String> lastNameLike) {
-        String lastName = lastNameLike.orElse("");
-        return ownerService.findOwnersByLastName(lastName);
+    Collection<Owner> getOwnersByLastName(@RequestParam("lastName") Optional<String> lastName) {
+        return ownerService.findOwnersByLastName(lastName.orElse(""));
     }
 
     @GetMapping(value = "/api/v1/owners/{ownerId}", produces = MediaType.APPLICATION_JSON_VALUE)

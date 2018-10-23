@@ -1,10 +1,12 @@
 package org.springframework.samples.petclinic.rest.Owner;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 public class CreatePetRequest {
     @NotNull
+    @Size(min=1)
     private String name;
 
     @NotNull

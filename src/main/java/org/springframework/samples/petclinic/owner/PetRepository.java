@@ -42,7 +42,7 @@ public interface PetRepository extends Repository<Pet, Integer> {
     @Transactional(readOnly = true)
     List<PetType> findPetTypes();
 
-    @Query("SELECT ptype FROM PetType ptype WHERE ptype.name LIKE :name% ORDER BY ptype.name")
+    @Query("SELECT ptype FROM PetType ptype WHERE lower(ptype.name) LIKE lower(concat(:name, '%')) ORDER BY ptype.name")
     @Transactional(readOnly = true)
     List<PetType> findPetTypes(@Param("name") String name);
 
@@ -58,7 +58,8 @@ public interface PetRepository extends Repository<Pet, Integer> {
     Pet findById(Integer id);
 
     @Transactional(readOnly = true)
-    Collection<Pet> findByName(String name);
+    @Query("SELECT pet FROM Pet pet WHERE lower(pet.name) LIKE lower(concat(:name, '%')) ORDER BY pet.name ASC")
+    Collection<Pet> findByName(@Param("name") String name);
     /**
      * Save a {@link Pet} to the data store, either inserting or updating it.
      * @param pet the {@link Pet} to save

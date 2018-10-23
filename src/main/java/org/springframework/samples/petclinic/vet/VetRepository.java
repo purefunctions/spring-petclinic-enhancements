@@ -16,10 +16,13 @@
 package org.springframework.samples.petclinic.vet;
 
 import java.util.Collection;
+import java.util.Set;
 
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -39,12 +42,27 @@ public interface VetRepository extends Repository<Vet, Integer> {
      * @return a <code>Collection</code> of <code>Vet</code>s
      */
     @Transactional(readOnly = true)
+    @Query("SELECT sp FROM Specialty sp WHERE sp.id = :id")
+    Specialty findSpeciality(@Param("id") Integer specialityId);
+
+    @Transactional(readOnly = true)
+    @Query("SELECT sp FROM Specialty sp WHERE lower(sp.name) LIKE lower(concat(:name, '%')) ORDER BY sp.name")
+    Collection<Specialty> findSpecialities(@Param("name") String name);
+
+    @Transactional(readOnly = true)
+    @Query(value = "SELECT sp FROM Specialty sp WHERE sp.id IN :ids")
+    Collection<Specialty> findSpecialities(@Param("ids") Set<Integer> ids);
+
+    @Transactional(readOnly = true)
     @Cacheable("vets")
     Collection<Vet> findAll() throws DataAccessException;
 
+    @Transactional(readOnly = true)
+    @Query("SELECT vet FROM Vet vet WHERE lower(vet.lastName) LIKE lower(concat(:lastName, '%')) ORDER BY vet.lastName ASC")
+    Collection<Vet> findByLastName(@Param("lastName") String lastName);
 
     @Transactional(readOnly = true)
     Vet findById(Integer id);
 
-    void save(Vet vet);
+    Vet save(Vet vet);
 }
