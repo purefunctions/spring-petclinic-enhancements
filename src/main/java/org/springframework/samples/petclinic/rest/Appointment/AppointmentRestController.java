@@ -1,8 +1,8 @@
-package org.springframework.samples.petclinic.appointment;
+package org.springframework.samples.petclinic.rest.Appointment;
 
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
+import org.springframework.samples.petclinic.appointment.Appointment;
+import org.springframework.samples.petclinic.service.AppointmentService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,61 +11,19 @@ import org.springframework.http.MediaType;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
-class AppointmentInfo {
-    private Integer petId;
-    private Integer vetId;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-
-    public Integer getPetId() {
-        return petId;
-    }
-
-    public void setPetId(Integer petId) {
-        this.petId = petId;
-    }
-
-    public Integer getVetId() {
-        return vetId;
-    }
-
-    public void setVetId(Integer vetId) {
-        this.vetId = vetId;
-    }
-
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
-    }
-}
 
 
-@Controller
-public class AppointmentController {
+@RestController
+public class AppointmentRestController {
     private final AppointmentService appointmentService;
 
-    public AppointmentController(AppointmentService appointmentService) {
+    public AppointmentRestController(AppointmentService appointmentService) {
         this.appointmentService = appointmentService;
     }
 
     @GetMapping(value = "/api/v1/availabilities", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
     @Transactional
     public Collection<LocalDateTime> getAvailableStartTimesByDateAndVetId(
         @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
@@ -76,7 +34,6 @@ public class AppointmentController {
     }
 
     @GetMapping(value = "/api/v1/appointments", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
     @Transactional
     public Collection<Appointment> getAllScheduledAppointments(
         @RequestParam("petId") Optional<Integer> petId,
@@ -99,14 +56,19 @@ public class AppointmentController {
     }
 
     @PostMapping(value = "/api/v1/appointments", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
     @Transactional
-    Appointment createNewAppointment(@RequestBody AppointmentInfo appointmentInfo) {
+    Appointment createNewAppointment(@RequestBody @Valid CreateAppointmentRequest createAppointmentRequest) {
         return appointmentService.createNewAppointment(
-            appointmentInfo.getVetId(),
-            appointmentInfo.getPetId(),
-            appointmentInfo.getStartTime(),
-            appointmentInfo.getEndTime()
+            createAppointmentRequest.getVetId(),
+            createAppointmentRequest.getPetId(),
+            createAppointmentRequest.getStartTime(),
+            createAppointmentRequest.getStartTime().plusMinutes(AppointmentService.APPOINTMENT_DURATION_MINUTES)
         );
+    }
+
+    @DeleteMapping(value = "/api/v1/appointments/{appointmentId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
+    Appointment cancelAppointment(@PathVariable Integer appointmentId) {
+        return appointmentService.cancelAppointment(appointmentId);
     }
 }

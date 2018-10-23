@@ -1,8 +1,14 @@
-package org.springframework.samples.petclinic.appointment;
+package org.springframework.samples.petclinic.service;
 
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.samples.petclinic.appointment.Appointment;
+import org.springframework.samples.petclinic.appointment.AppointmentRepository;
+import org.springframework.samples.petclinic.appointment.AppointmentStatus;
 import org.springframework.samples.petclinic.owner.Pet;
 import org.springframework.samples.petclinic.owner.PetRepository;
+import org.springframework.samples.petclinic.service.Exceptions.EntityConflictException;
+import org.springframework.samples.petclinic.service.Exceptions.EntityNotFoundException;
+import org.springframework.samples.petclinic.service.Exceptions.InternalErrorException;
 import org.springframework.samples.petclinic.vet.Vet;
 import org.springframework.samples.petclinic.vet.VetRepository;
 import org.springframework.stereotype.Service;
@@ -24,7 +30,7 @@ public class AppointmentService {
     private final PetRepository petRepository;
     private final VetRepository vetRepository;
 
-    private final int APPOINTMENT_DURATION_MINUTES = 30;
+    public static final int APPOINTMENT_DURATION_MINUTES = 30;
 
     AppointmentService(AppointmentRepository appointmentRepository, PetRepository petRepository, VetRepository vetRepository) {
         this.appointmentRepository = appointmentRepository;
@@ -38,15 +44,38 @@ public class AppointmentService {
         Appointment newAppointment = new Appointment();
         Pet pet = petRepository.findById(petId);
         Vet vet = vetRepository.findById(vetId);
-        Optional<AppointmentStatus> status = appointmentRepository.findAppointmentStatus("scheduled");
-        newAppointment.setStartTime(start);
+        AppointmentStatus status = appointmentRepository.findAppointmentStatus(
+            "scheduled"
+        ).orElseThrow(
+            () -> new InternalErrorException("Internal error. Couldn't find status id for 'scheduled' status")
+        );
+
+        long numAppointmentsForVetAtGivenTime = appointmentRepository.countAppointmentsDuringTimeIntervalAndVetId(
+            start, end, status, vetId
+        );
+
+        if(numAppointmentsForVetAtGivenTime > 0) {
+            throw new EntityConflictException("Appointment(s) already exist for vetId " + vetId +
+                " in time range between " + start + " and " + end);
+        }
+
+        long numAppointmentsForPetAtGivenTime = appointmentRepository.countAppointmentsDuringTimeIntervalAndPetId(
+            start, end, status, petId
+        );
+
+        if(numAppointmentsForPetAtGivenTime > 0) {
+            throw new EntityConflictException("Appointment(s) already exist for petId " + petId +
+                " in time range between " + start + " and " + end);
+        }
+newAppointment.setStartTime(start);
         newAppointment.setEndTime(end);
         newAppointment.setPet(pet);
         newAppointment.setVet(vet);
-        status.ifPresent(newAppointment::setStatus);
+        newAppointment.setStatus(status);
         return appointmentRepository.save(newAppointment);
     }
 
+    @Transactional
     public Collection<LocalDateTime> findAvailableSlotsOnDateByVetId(Integer vetId, LocalDate date) {
         if (isWeekend(date)) {
             return new ArrayList<>();
@@ -58,11 +87,11 @@ public class AppointmentService {
         }
         LocalDateTime start = date.atTime(8, 0);
         LocalDateTime end = date.atTime(17, 0).minusMinutes(APPOINTMENT_DURATION_MINUTES);
-        Collection<Appointment> appointmentsOnDate = this.appointmentRepository.findByBetweenStartTimeAndVetId(
+        Collection<Appointment> appointmentsOnDate = this.appointmentRepository.findAppointmentsDuringTimeIntervalAndVetId(
             start, end, scheduledStatus.get(), vetId
         );
 
-        ArrayList<Optional<LocalDateTime>> availableAppointmentSots = this.getPossibleAppointmentsForDate(date);
+        ArrayList<Optional<LocalDateTime>> availableAppointmentSots = AppointmentService.getPossibleAppointmentsForDate(date);
 
         for (Appointment appointment: appointmentsOnDate) {
             Stream<Integer> occupyingSlotIndices = getOccupyingSlotIndices(
@@ -75,9 +104,28 @@ public class AppointmentService {
             );
         }
 
-        return availableAppointmentSots.stream().filter(Optional::isPresent).map(Optional::get).collect(Collectors.toCollection(ArrayList::new));
+        return availableAppointmentSots
+                .stream()
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
+    @Modifying
+    @Transactional
+    public Appointment cancelAppointment(Integer appointmentId) {
+        AppointmentStatus status = appointmentRepository.findAppointmentStatus (
+            "canceled"
+        ).orElseThrow(() -> new InternalErrorException("Internal error. Couldn't find status id for 'scheduled' status"));
+
+        Appointment appt = appointmentRepository.findById(appointmentId).orElseThrow(
+            () -> new EntityNotFoundException("Appointment with id " + appointmentId + " not found")
+        );
+        appt.setStatus(status);
+        return appointmentRepository.save(appt);
+    }
+
+    @Transactional
     public Collection<Appointment> findAllScheduledAppointments() {
         Optional<AppointmentStatus> scheduledStatus = appointmentRepository.findAppointmentStatus("scheduled");
         if (!scheduledStatus.isPresent()) {
@@ -86,6 +134,7 @@ public class AppointmentService {
         return appointmentRepository.findAllByStatusOrderByStartTimeAscVetAsc(scheduledStatus.get());
     }
 
+    @Transactional
     public Collection<Appointment> findAllScheduledAppointmentsForVet(Integer vetId) {
         Optional<AppointmentStatus> scheduledStatus = appointmentRepository.findAppointmentStatus("scheduled");
         if (!scheduledStatus.isPresent()) {
@@ -95,6 +144,7 @@ public class AppointmentService {
         return appointmentRepository.findAppointmentForVetId(scheduledStatus.get(), vetId);
     }
 
+    @Transactional
     public Collection<Appointment> findAllScheduledAppointmentsForPet(Integer petId) {
         Optional<AppointmentStatus> scheduledStatus = appointmentRepository.findAppointmentStatus("scheduled");
         if (!scheduledStatus.isPresent()) {
@@ -104,6 +154,7 @@ public class AppointmentService {
         return appointmentRepository.findAppointmentForPetId(scheduledStatus.get(), petId);
     }
 
+    @Transactional
     public Collection<Appointment> findAllScheduledAppointmentsForPetAndVet(Integer petId, Integer vetId) {
         Optional<AppointmentStatus> scheduledStatus = appointmentRepository.findAppointmentStatus("scheduled");
         if (!scheduledStatus.isPresent()) {
@@ -113,11 +164,11 @@ public class AppointmentService {
         return appointmentRepository.findAppointmentForPetIdAndVetId(scheduledStatus.get(), petId, vetId);
     }
 
-    private boolean isWeekend(LocalDate date) {
+    private static boolean isWeekend(LocalDate date) {
         return (date.getDayOfWeek().getValue() == 6 || date.getDayOfWeek().getValue() == 7);
     }
 
-    private ArrayList<Optional<LocalDateTime>> getPossibleAppointmentsForDate(LocalDate date) {
+    private static ArrayList<Optional<LocalDateTime>> getPossibleAppointmentsForDate(LocalDate date) {
         return Stream.iterate(
             date.atTime(8,0),
             d -> d.plusMinutes(APPOINTMENT_DURATION_MINUTES)
@@ -130,7 +181,7 @@ public class AppointmentService {
         );
     }
 
-    private Optional<Integer> getSlotIndexByTime(LocalTime time) {
+    private static Optional<Integer> getSlotIndexByTime(LocalTime time) {
         if(time.isBefore(LocalTime.of(8, 0)) || time.isAfter(LocalTime.of(17,0).minusMinutes(APPOINTMENT_DURATION_MINUTES))) {
             return Optional.empty();
         }
@@ -139,7 +190,7 @@ public class AppointmentService {
         return Optional.of(minutesSinceMidnight / APPOINTMENT_DURATION_MINUTES);
     }
 
-    private Stream<Integer> getOccupyingSlotIndices(LocalTime startTime, LocalTime endTime) {
+    private static Stream<Integer> getOccupyingSlotIndices(LocalTime startTime, LocalTime endTime) {
         LocalTime dayBegin = LocalTime.of(8, 0);
         LocalTime dayEnd = LocalTime.of(17, 0);
         if(startTime.isBefore(dayBegin) && endTime.isAfter(dayEnd)) {

@@ -82,8 +82,6 @@ CREATE TABLE appointments (
 ALTER TABLE appointments ADD CONSTRAINT fk_appointments_pets FOREIGN KEY (pet_id) REFERENCES pets (id);
 ALTER TABLE appointments ADD CONSTRAINT fk_appointments_vets FOREIGN KEY (vet_id) REFERENCES vets (id);
 ALTER TABLE appointments ADD CONSTRAINT fk_appointments_appointment_statuses FOREIGN KEY (status_id) REFERENCES appointment_statuses (id);
-ALTER TABLE appointments ADD CONSTRAINT uq_appointments_vet_id_start_time UNIQUE (vet_id, start_time);
-ALTER TABLE appointments ADD CONSTRAINT uq_appointments_pet_id_start_time UNIQUE (pet_id, start_time);
 CREATE INDEX appointments_start_time ON appointments (start_time);
 CREATE INDEX appointments_end_time ON appointments (end_time);
 

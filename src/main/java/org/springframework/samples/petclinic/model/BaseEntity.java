@@ -15,6 +15,8 @@
  */
 package org.springframework.samples.petclinic.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 
 import javax.persistence.GeneratedValue;
@@ -43,6 +45,9 @@ public class BaseEntity implements Serializable {
         this.id = id;
     }
 
+    // Is there a better way to handle @JsonIgnore as this may be a usecase or route
+    // specific thing
+    @JsonIgnore
     public boolean isNew() {
         return this.id == null;
     }

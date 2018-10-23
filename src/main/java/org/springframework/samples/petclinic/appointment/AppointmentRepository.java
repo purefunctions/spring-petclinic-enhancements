@@ -4,7 +4,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.samples.petclinic.owner.Pet;
-import org.springframework.samples.petclinic.vet.Vet;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -22,7 +21,7 @@ public interface AppointmentRepository extends Repository<Appointment, Integer> 
     Optional<AppointmentStatus> findAppointmentStatus(@Param("name") String name);
 
     @Transactional(readOnly = true)
-    Appointment findById(Integer id);
+    Optional<Appointment> findById(Integer id);
 
     @Transactional(readOnly = true)
     Collection<Appointment> findAllByStatusOrderByStartTimeAscVetAsc(AppointmentStatus status);
@@ -52,17 +51,33 @@ public interface AppointmentRepository extends Repository<Appointment, Integer> 
         @Param("petId") Integer petId
     );
 
-    @Query("SELECT appt FROM Appointment appt WHERE appt.startTime >= :from AND appt.endTime <= :to AND appt.vet.id = :vetId  AND appt.status = :status ORDER BY appt.status ASC, appt.startTime ASC")
+    @Query("SELECT appt FROM Appointment appt WHERE (:intervalStart <= appt.endTime OR :intervalEnd <= appt.startTime) AND appt.vet.id = :vetId  AND appt.status = :status ORDER BY appt.status ASC, appt.startTime ASC")
     @Transactional(readOnly = true)
-    Collection<Appointment> findByBetweenStartTimeAndVetId(
-        @Param("from") LocalDateTime from,
-        @Param("to") LocalDateTime to,
+    Collection<Appointment> findAppointmentsDuringTimeIntervalAndVetId(
+        @Param("intervalStart") LocalDateTime intervalStart,
+        @Param("intervalEnd") LocalDateTime intervalEnd,
         @Param("status") AppointmentStatus status,
         @Param("vetId") Integer vetId
     );
 
+    @Query("SELECT COUNT(appt) FROM Appointment appt WHERE (:intervalStart <= appt.endTime OR :intervalEnd <= appt.startTime) AND appt.vet.id = :vetId  AND appt.status = :status")
+    @Transactional(readOnly = true)
+    Long countAppointmentsDuringTimeIntervalAndVetId(
+        @Param("intervalStart") LocalDateTime intervalStart,
+        @Param("intervalEnd") LocalDateTime intervalEnd,
+        @Param("status") AppointmentStatus status,
+        @Param("vetId") Integer vetId
+    );
 
-    // TODO: Need to implement cancel appointment feature
+    @Query("SELECT COUNT(appt) FROM Appointment appt WHERE (:intervalStart <= appt.endTime OR :intervalEnd <= appt.startTime) AND appt.pet.id = :petId  AND appt.status = :status")
+    @Transactional(readOnly = true)
+    Long countAppointmentsDuringTimeIntervalAndPetId(
+        @Param("intervalStart") LocalDateTime intervalStart,
+        @Param("intervalEnd") LocalDateTime intervalEnd,
+        @Param("status") AppointmentStatus status,
+        @Param("petId") Integer petId
+    );
 
+    @Transactional
     Appointment save(Appointment appointment);
 }

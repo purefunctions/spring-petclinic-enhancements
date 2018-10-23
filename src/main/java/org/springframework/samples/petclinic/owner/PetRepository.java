@@ -15,10 +15,12 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -40,6 +42,13 @@ public interface PetRepository extends Repository<Pet, Integer> {
     @Transactional(readOnly = true)
     List<PetType> findPetTypes();
 
+    @Query("SELECT ptype FROM PetType ptype WHERE ptype.name LIKE :name% ORDER BY ptype.name")
+    @Transactional(readOnly = true)
+    List<PetType> findPetTypes(@Param("name") String name);
+
+    @Query("SELECT ptype FROM PetType ptype WHERE ptype.id = :petId")
+    PetType findPetType(@Param("petId") Integer petId);
+
     /**
      * Retrieve a {@link Pet} from the data store by id.
      * @param id the id to search for
@@ -48,10 +57,12 @@ public interface PetRepository extends Repository<Pet, Integer> {
     @Transactional(readOnly = true)
     Pet findById(Integer id);
 
+    @Transactional(readOnly = true)
+    Collection<Pet> findByName(String name);
     /**
      * Save a {@link Pet} to the data store, either inserting or updating it.
      * @param pet the {@link Pet} to save
      */
-    void save(Pet pet);
+    Pet save(Pet pet);
 }
 

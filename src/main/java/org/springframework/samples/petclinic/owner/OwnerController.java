@@ -98,17 +98,6 @@ class OwnerController {
         }
     }
 
-    @GetMapping(value = "/api/v1/owners", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public Collection<Owner> getByLastName(
-        @RequestParam("lastName") Optional<String> lastName
-    ) {
-        if (lastName.isPresent()) {
-            return this.owners.findByLastName(lastName.get());
-        }
-        return this.owners.findByLastName("");
-    }
-
     @GetMapping("/owners/{ownerId}/edit")
     public String initUpdateOwnerForm(@PathVariable("ownerId") int ownerId, Model model) {
         Owner owner = this.owners.findById(ownerId);
