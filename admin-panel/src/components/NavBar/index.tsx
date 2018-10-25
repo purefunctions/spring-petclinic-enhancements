@@ -15,26 +15,26 @@ const styles = (theme: Theme) => ({
 
 type routeType = '/welcome' | '/appointments' | '/pets' | '/vets' | '/owners';
 
-interface INavigationProps {
+interface INavBarProps {
     [x:string]: any
 }
 
-interface INavigationState {
+interface INavBarState {
     currentRoute: routeType
 }
 
 // The combined type of the Navigation component's props:
-// Start with the type of INavigationProps and add
+// Start with the type of INavBarProps and add
 // 1. RouteComponentProps<{}> which provides 'history' and 'blob' properties and
 // 2. WithStyles<'root'> which provides a 'classes' property which contains a 'root' key
 // Omitting this type in the anonymous class below doesn't let typescript infer the property type of
 // the react component
-type INavigationPropsDerived = INavigationProps  & RouteComponentProps<any> & WithStyles<'root'>
+type INavigationPropsDerived = INavBarProps  & RouteComponentProps<any> & WithStyles<'root'>
 
 export default withStyles(styles)(
     withRouter(
-        class Navigation extends React.Component<INavigationPropsDerived, INavigationState> {
-            public state: INavigationState = {
+        class Navigation extends React.Component<INavigationPropsDerived, INavBarState> {
+            public state: INavBarState = {
                 currentRoute: "/welcome"
             };
 
@@ -86,7 +86,7 @@ export default withStyles(styles)(
                         history.push('/appointments');
                         break;
                     case "/vets":
-                        history.push('/vets');
+                        history.push('vets');
                         break;
                     case "/pets":
                         history.push('/pets');

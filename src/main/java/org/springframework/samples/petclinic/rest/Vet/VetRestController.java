@@ -28,7 +28,7 @@ public class VetRestController {
         return vetService.findVetSpecialities(name.orElse(""));
     }
 
-    @GetMapping(value = "/api/v1/vet/{vetId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/api/v1/vets/{vetId}", produces = MediaType.APPLICATION_JSON_VALUE)
     Vet findVets(@PathVariable Integer vetId) {
         return vetService.findById(vetId);
     }

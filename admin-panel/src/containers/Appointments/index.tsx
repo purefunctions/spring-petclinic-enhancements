@@ -2,7 +2,7 @@ import {Theme} from "@material-ui/core";
 import withStyles, {CSSProperties, WithStyles} from "@material-ui/core/styles/withStyles";
 import * as React from 'react';
 import {RouteComponentProps, withRouter} from "react-router";
-import {Link} from "react-router-dom";
+import {IAppointmentSummary} from "../../common/types";
 
 const styles = (theme: Theme) => ({
     root: {
@@ -13,18 +13,17 @@ const styles = (theme: Theme) => ({
     } as CSSProperties,
 });
 
-type IWelcomePropsDerived = WithStyles<'root'> & {} & RouteComponentProps<any>;
+interface IAppointmentsProps {
+    isAppointmentsDownloadInProgress: boolean,
+    appointments: [IAppointmentSummary]
+}
+
+type IAppointmentsPropsDerived = IAppointmentsProps & RouteComponentProps<any> & WithStyles<'root'>;
 
 export default withStyles(styles)(
     withRouter(
-    class Welcome extends React.Component<IWelcomePropsDerived> {
-        public render() {
-            return (
-                <div>
-                    <p>Welcome</p>
-                    <Link to="/vets">Vets</Link>
-                </div>
-            )
+        class Appointments extends React.Component<IAppointmentsPropsDerived> {
+
         }
-    }
-));
+    )
+);

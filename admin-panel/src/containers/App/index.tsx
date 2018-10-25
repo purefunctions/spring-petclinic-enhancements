@@ -8,7 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import {Redirect, Route, Switch} from "react-router";
 import {HashRouter} from "react-router-dom";
-import Navigation from "../../components/Navigation";
+import Navigation from "../../components/NavBar";
 import WelcomeView from "../../containers/Welcome";
 
 const appTheme = createMuiTheme({});
