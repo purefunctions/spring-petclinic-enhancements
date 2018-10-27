@@ -22,7 +22,17 @@ export default withStyles(styles)(
             return (
                 <div>
                     <p>Welcome</p>
+                    <Link to="/appointments">Appointments</Link>
+                    <br/>
+                    <Link to="/appointments/new">New Appointment</Link>
+                    <br/>
                     <Link to="/vets">Vets</Link>
+                    <br/>
+                    <Link to="/vets/new">New Vet</Link>
+                    <br/>
+                    <Link to="/pets">Pets</Link>
+                    <br/>
+                    <Link to="/pets/new">New Pet</Link>
                 </div>
             )
         }

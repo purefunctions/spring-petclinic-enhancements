@@ -1,8 +1,6 @@
 import {Action} from "redux";
 import {
-    IAppointment,
     IAppointmentSummary,
-    IServerErrorStatus,
     IServerGetOp,
     IServerOpFailure,
     IServerOpSuccess
@@ -10,10 +8,9 @@ import {
 
 export interface IAppointmentState {
     appointments: {
-        appointmentsList: IAppointment[],
+        appointmentsList: IAppointmentSummary[],
         isGetInProgress: boolean,
-        serverError?: IServerErrorStatus,
-        errorMessage?: string,
+        serverFailure?: IServerOpFailure,
         dateFilter?: Date,
         vetIdFilter?: number,
         petIdFilter?: number

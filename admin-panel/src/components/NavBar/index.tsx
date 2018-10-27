@@ -13,7 +13,7 @@ const styles = (theme: Theme) => ({
     } as CSSProperties
 });
 
-type routeType = '/welcome' | '/appointments' | '/pets' | '/vets' | '/owners';
+type routeType = '/welcome' | '/appointments' | '/pets' | '/vets';
 
 interface INavBarProps {
     [x:string]: any
@@ -52,12 +52,11 @@ export default withStyles(styles)(
                 const {currentRoute} = this.state;
                 return (
                     <div>
-                        <Tabs value={currentRoute} onChange={this.handleChange}>
+                        <Tabs value={'/' + currentRoute.split("/").slice(1, 2)} onChange={this.handleChange}>
                             <Tab label='Welcome' value="/welcome"/>
                             <Tab label='Appointments' value="/appointments"/>
                             <Tab label='Vets' value="/vets"/>
                             <Tab label='Pets' value="/pets"/>
-                            <Tab label='Owners' value="/owners"/>
                         </Tabs>
                     </div>
                 );
@@ -71,6 +70,7 @@ export default withStyles(styles)(
                 this.setState({
                     currentRoute: route
                 });
+                window.console.log(route);
                 if(!skipURLUpdate) {
                     this.pushRoute(route);
                 }
@@ -90,9 +90,6 @@ export default withStyles(styles)(
                         break;
                     case "/pets":
                         history.push('/pets');
-                        break;
-                    case "/owners":
-                        history.push('/owners');
                         break;
                     default:
                         checkNever(route);

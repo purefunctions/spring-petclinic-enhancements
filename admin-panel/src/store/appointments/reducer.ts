@@ -1,6 +1,8 @@
 import * as R from 'ramda';
 import {Reducer} from 'redux';
 import {checkNever} from "../../common/lib/util";
+import {IAppointmentSummary, IServerOpFailure} from "../../common/types";
+import {IRootState} from "../index";
 // import {IRootState} from "../index";
 import {
     IAppointmentsAction,
@@ -14,10 +16,9 @@ const initState: IAppointmentState = {
     appointments: {
         appointmentsList: [],
         dateFilter: undefined,
-        errorMessage: "",
         isGetInProgress: false,
         petIdFilter: undefined,
-        serverError: undefined,
+        serverFailure: undefined,
         vetIdFilter: undefined,
     }
 };
@@ -31,10 +32,9 @@ const reducer: Reducer<IAppointmentState> = (state: IAppointmentState = initStat
                     appointments: {
                         appointmentsList: [],
                         dateFilter: action.payload.date !== undefined ? action.payload.date : undefined,
-                        errorMessage: "",
                         isGetInProgress: true,
                         petIdFilter: action.payload.petId !== undefined ? action.payload.petId : undefined,
-                        serverError: undefined,
+                        serverFailure: undefined,
                         vetIdFilter: action.payload.vetId !== undefined ? action.payload.vetId : undefined,
                     }
                 }
@@ -45,9 +45,8 @@ const reducer: Reducer<IAppointmentState> = (state: IAppointmentState = initStat
                 {
                     appointments: {
                         appointmentsList: action.payload.result.value,
-                        errorMessage: "",
                         isGetInProgress: false,
-                        serverError: undefined,
+                        serverFailure: undefined,
                     }
                 }
             );
@@ -57,9 +56,8 @@ const reducer: Reducer<IAppointmentState> = (state: IAppointmentState = initStat
                 {
                     appointments: {
                         appointmentsList: [],
-                        errorMessage: action.payload.result.message,
                         isGetInProgress: false,
-                        serverError: action.payload.result.error,
+                        serverFailure: action.payload.result
                     }
                 }
             );
@@ -68,5 +66,19 @@ const reducer: Reducer<IAppointmentState> = (state: IAppointmentState = initStat
             return state;
     }
 };
+
+/* Selectors */
+
+export function isGetAppointmentsListInProgress(rootState: IRootState) : boolean {
+    return rootState.appointments.appointments.isGetInProgress;
+}
+
+export function appointmentsList(rootState: IRootState) : IAppointmentSummary[] {
+    return rootState.appointments.appointments.appointmentsList;
+}
+
+export function getAppointmentsListServerError(rootState: IRootState) : IServerOpFailure | undefined {
+    return rootState.appointments.appointments.serverFailure;
+}
 
 export default reducer;

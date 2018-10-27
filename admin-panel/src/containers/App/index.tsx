@@ -9,6 +9,12 @@ import * as React from 'react';
 import {Redirect, Route, Switch} from "react-router";
 import {HashRouter} from "react-router-dom";
 import Navigation from "../../components/NavBar";
+import Appointments from "../../containers/Appointments";
+import CreateAppointment from "../../containers/CreateAppointment";
+import CreatePet from "../../containers/CreatePet";
+import CreateVet from "../../containers/CreateVet";
+import Pets from "../../containers/Pets";
+import Vets from "../../containers/Vets";
 import WelcomeView from "../../containers/Welcome";
 
 const appTheme = createMuiTheme({});
@@ -43,6 +49,12 @@ export default class App extends React.Component<{}> {
                                 <div>
                                     <Switch>
                                         <Route path="/welcome" component={WelcomeView}/>
+                                        <Route path="/appointments/new" component={CreateAppointment}/>
+                                        <Route path="/appointments" component={Appointments}/>
+                                        <Route path="/vets/new" component={CreateVet}/>
+                                        <Route path="/vets" component={Vets}/>
+                                        <Route path="/pets/new" component={CreatePet}/>
+                                        <Route path="/pets" component={Pets}/>
                                         <Redirect from="/" to="/welcome"/>
                                     </Switch>
                                 </div>
