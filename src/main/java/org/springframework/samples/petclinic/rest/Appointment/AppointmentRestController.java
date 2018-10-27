@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 
+@CrossOrigin
 @RestController
 public class AppointmentRestController {
     private final AppointmentService appointmentService;

@@ -8,14 +8,14 @@ import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import {Redirect, Route, Switch} from "react-router";
 import {HashRouter} from "react-router-dom";
-import Navigation from "../../components/NavBar";
-import Appointments from "../../containers/Appointments";
-import CreateAppointment from "../../containers/CreateAppointment";
-import CreatePet from "../../containers/CreatePet";
-import CreateVet from "../../containers/CreateVet";
-import Pets from "../../containers/Pets";
-import Vets from "../../containers/Vets";
-import WelcomeView from "../../containers/Welcome";
+import Appointments from "../Appointments/index";
+import CreateAppointment from "../CreateAppointment/index";
+import CreatePet from "../CreatePet/index";
+import CreateVet from "../CreateVet/index";
+import Navigation from "../NavBar/index";
+import Pets from "../Pets/index";
+import Vets from "../Vets/index";
+import WelcomeView from "../Welcome/index";
 
 const appTheme = createMuiTheme({});
 

@@ -3,7 +3,7 @@ import {ThunkAction} from "redux-thunk";
 import  * as api from '../../common/lib/api';
 import {isServerResultFailure} from "../../common/lib/util";
 import {
-    IAppointmentSummary,
+    IAppointment,
     IServerGetOp,
     IServerOpFailure,
     IServerOpResult,
@@ -22,7 +22,7 @@ export const getAppointmentsList : ActionCreator<ThunkAction<void, IRootState, v
             },
             type: "@@appointments/APPOINTMENTS_LIST_GET_REQUEST",
         });
-        const result : IServerOpResult<IServerGetOp, IAppointmentSummary[]> = await api.get_appointments(dateFilter, vetIdFilter, petIdFilter);
+        const result : IServerOpResult<IServerGetOp, IAppointment[]> = await api.get_appointments(dateFilter, vetIdFilter, petIdFilter);
         if(isServerResultFailure(result)) {
             dispatch(declareUserGetAppointmentsFailed(result));
         } else {
@@ -32,7 +32,7 @@ export const getAppointmentsList : ActionCreator<ThunkAction<void, IRootState, v
 };
 
 export const declareUserGetAppointmentsSucceeded : ActionCreator<IAppointmentsAction> =
-    (result: IServerOpSuccess<IServerGetOp, IAppointmentSummary[]>) => ({
+    (result: IServerOpSuccess<IServerGetOp, IAppointment[]>) => ({
         payload: {
             result
         },

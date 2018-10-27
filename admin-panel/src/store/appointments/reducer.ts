@@ -1,7 +1,7 @@
 import * as R from 'ramda';
 import {Reducer} from 'redux';
 import {checkNever} from "../../common/lib/util";
-import {IAppointmentSummary, IServerOpFailure} from "../../common/types";
+import {IAppointment, IServerOpFailure} from "../../common/types";
 import {IRootState} from "../index";
 // import {IRootState} from "../index";
 import {
@@ -73,7 +73,7 @@ export function isGetAppointmentsListInProgress(rootState: IRootState) : boolean
     return rootState.appointments.appointments.isGetInProgress;
 }
 
-export function appointmentsList(rootState: IRootState) : IAppointmentSummary[] {
+export function appointmentsList(rootState: IRootState) : IAppointment[] {
     return rootState.appointments.appointments.appointmentsList;
 }
 

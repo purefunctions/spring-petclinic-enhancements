@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import java.util.Collection;
 import java.util.Optional;
 
+@CrossOrigin
 @RestController
 public class OwnerRestController {
     private final OwnerService ownerService;

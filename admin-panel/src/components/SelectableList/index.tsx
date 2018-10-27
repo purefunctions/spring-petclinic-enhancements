@@ -10,13 +10,15 @@ const styles = (theme: Theme) => ({
     root: {
         backgroundColor: theme.palette.background.paper,
         flexGrow: 1,
+        maxHeight: 400,
+        overflow: 'auto'
     },
 });
 
-interface ISelectableListProps<T> {
+export interface ISelectableListProps<T> {
     listItems: T[],
-    onSelected: (listIndex: number) => any,
-    onUnselected: (listIndex: number) => any,
+    onSelected: (item: T) => any,
+    onUnselected: () => any,
     stringify: (item: T) => string
 }
 
@@ -33,8 +35,8 @@ export default withStyles(styles)(
         private static generateDefaultProps<T>(): ISelectableListProps<T> {
             return {
                 listItems: [],
-                onSelected: (_: number) => null,
-                onUnselected: (_: number) => null,
+                onSelected: (_: T) => null,
+                onUnselected: () => null,
                 stringify: (item: T) => JSON.stringify(item)
             }
         }
@@ -50,10 +52,11 @@ export default withStyles(styles)(
                 <div className={classes.root}>
                     <List component='nav'>
                         {
-                            listItems.map((item, index) =>
-                               <ListItem button={true} selected={selectedIndex === index} key={`${index}`} onClick={this.handleOnClick(index)}>
-                                   <ListItemText primary={stringify(item)}/>
-                               </ListItem>
+                            listItems.map((item, index) => {
+                                    return <ListItem button={true} selected={selectedIndex === index} key={`${index}`} onClick={this.handleOnClick(index)}>
+                                        <ListItemText primary={stringify(item)}/>
+                                    </ListItem>
+                            }
                             )
                         }
                     </List>
@@ -64,13 +67,13 @@ export default withStyles(styles)(
         private handleOnClick = (selectedIndex: number) => (_: any) => {
             this.setState(
                 (prevState: ISelectableListState, props: ISelectableListPropsDerived<T>) => {
-                    const {onSelected, onUnselected} = this.props;
+                    const {onSelected, onUnselected, listItems} = this.props;
                     const prevIndex = prevState.selectedIndex;
                     if (prevIndex === selectedIndex) {
-                        onUnselected(selectedIndex);
+                        onUnselected();
                         return R.mergeDeepRight(prevState, {selectedIndex: -1});
                     }
-                    onSelected(selectedIndex);
+                    onSelected(listItems[selectedIndex]);
                     return R.mergeDeepRight(prevState, {selectedIndex});
                 }
             )

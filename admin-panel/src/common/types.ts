@@ -7,25 +7,11 @@ export interface IOwner {
     city: string,
 }
 
-export interface IOwnerSummary {
-    id: number,
-    firstName: string,
-    lastName: string,
-    telephone: string
-}
-
 export interface IVet {
     id: number,
     firstName: string,
     lastName: string,
-    specialities: ISpecialty[]
-}
-
-export interface IVetSummary {
-   id: number,
-   firstName: string,
-   lastName: string,
-   specialities: string[]
+    specialties: ISpecialty[]
 }
 
 export interface IPet {
@@ -35,35 +21,20 @@ export interface IPet {
     owner: IOwner
 }
 
-export interface IPetSummary {
-    id: number,
-    name: string,
-    ownerSummary: IOwnerSummary,
-    type: string
-}
-
 export interface ISpecialty {
     id: number,
-    specialty: string
+    name: string
 }
 
 export interface IPetType {
     id: number,
-    type: string
+    name: string
 }
 
 export interface IAppointment {
     id: number,
     pet: IPet,
     vet: IVet,
-    startTime: Date
-    endTime: Date
-}
-
-export interface IAppointmentSummary {
-    id: number,
-    petSummary: IPetSummary,
-    vetSummary: IVetSummary,
     startTime: Date
     endTime: Date
 }

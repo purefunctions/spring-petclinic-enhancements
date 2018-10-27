@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-interface IWithEmptyListIndicatorProps<T> {
+export interface IWithEmptyListIndicatorProps<T> {
     listItems: T[]
 }
 

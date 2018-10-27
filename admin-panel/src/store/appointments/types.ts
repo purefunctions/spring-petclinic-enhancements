@@ -1,6 +1,6 @@
 import {Action} from "redux";
 import {
-    IAppointmentSummary,
+    IAppointment,
     IServerGetOp,
     IServerOpFailure,
     IServerOpSuccess
@@ -8,7 +8,7 @@ import {
 
 export interface IAppointmentState {
     appointments: {
-        appointmentsList: IAppointmentSummary[],
+        appointmentsList: IAppointment[],
         isGetInProgress: boolean,
         serverFailure?: IServerOpFailure,
         dateFilter?: Date,
@@ -32,7 +32,7 @@ export interface IAppointmentsListGetRequest extends Action {
 export interface IAppointmentsListGetSucceeded extends Action {
     type: "@@appointments/APPOINTMENTS_LIST_GET_SUCCEEDED",
     payload: {
-        result: IServerOpSuccess<IServerGetOp, IAppointmentSummary[]>
+        result: IServerOpSuccess<IServerGetOp, IAppointment[]>
     }
 }
 
