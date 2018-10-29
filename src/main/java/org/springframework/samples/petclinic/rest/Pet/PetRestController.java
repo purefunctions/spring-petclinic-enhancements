@@ -6,6 +6,7 @@ import org.springframework.samples.petclinic.owner.PetType;
 import org.springframework.samples.petclinic.service.PetService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -31,5 +32,16 @@ public class PetRestController {
     @GetMapping(value = "/api/v1/pet_types", produces = MediaType.APPLICATION_JSON_VALUE)
     Collection<PetType> findPetTypes(@RequestParam Optional<String> type) {
         return petService.findPetTypes(type.orElse(""));
+    }
+
+    @PostMapping(value = "/api/v1/pets", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    Pet createNewPet(@RequestBody @Valid CreatePetRequest request) {
+        return petService.createNewPet(
+            request.getName(),
+            request.getBirthDate(),
+            request.getOwnerId(),
+            request.getPetTypeId()
+        );
     }
 }

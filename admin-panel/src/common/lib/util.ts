@@ -1,5 +1,15 @@
 import * as moment from "moment";
-import {IAppointment, IPet, IServerOp, IServerOpFailure, IServerOpResult, ISpecialty, IVet} from "../types";
+import {
+    IAppointment,
+    IOwner,
+    IPet,
+    IPetType,
+    IServerOp,
+    IServerOpFailure,
+    IServerOpResult,
+    ISpecialty,
+    IVet
+} from "../types";
 
 export function checkNever(_: never): void {
     return;
@@ -23,6 +33,14 @@ export function petToSummaryString(pet: IPet) {
 
 export function appointmentToSummaryString(appt: IAppointment) {
     return `${dateTimeToUSString(appt.startTime)} -- ${vetToSummaryString(appt.vet)} -- ${petToSummaryString(appt.pet)}`;
+}
+
+export function ownerToSummaryString(owner: IOwner) {
+    return `${owner.lastName}, ${owner.firstName} - ${owner.telephone}`;
+}
+
+export function petTypeToSummaryString(petType: IPetType) {
+    return petType.name;
 }
 
 export function dateTimeToUSString(date: Date) {

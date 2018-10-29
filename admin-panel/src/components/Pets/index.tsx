@@ -1,6 +1,6 @@
 import {Theme} from "@material-ui/core";
+import Button from "@material-ui/core/Button/Button";
 import withStyles, {CSSProperties, WithStyles} from "@material-ui/core/styles/withStyles";
-import Typography from "@material-ui/core/Typography/Typography";
 import * as React from 'react';
 import {RouteComponentProps, withRouter} from "react-router";
 
@@ -25,11 +25,16 @@ export default withStyles(styles)(
             public render() {
                 return (
                     <div className="root">
-                        <Typography variant='overline'>
-                            Pets - To be implemented
-                        </Typography>
+                        <Button variant='outlined' color='primary' onClick={this.handleCreatePet}>
+                            Create Pet
+                        </Button>
                     </div>
                 )
+            }
+
+            private handleCreatePet = () => {
+                const {history} = this.props;
+                history.push("/pets/new");
             }
         }
     )

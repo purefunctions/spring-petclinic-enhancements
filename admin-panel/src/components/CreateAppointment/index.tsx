@@ -29,12 +29,12 @@ import SelectableListWithIndicators from "../SelectableListWithIndicators";
 
 
 const styles = (theme: Theme) => ({
-    appointmentList: {
-        maxHeight: 400,
-        overflow: 'auto'
-    },
     button: {
         margin: theme.spacing.unit,
+    },
+    list: {
+        maxHeight: 400,
+        overflow: 'auto'
     },
     root: {
         backgroundColor: theme.palette.background.paper,
@@ -59,10 +59,8 @@ interface IAppointmentsState {
     createdAppointment?: IAppointment,
     selectedAvailability?: Date,
     selectedDate?: Date,
-    selectedDateUserText: string,
     selectedVet?: IVet,
     selectedPet?: IPet,
-    isAppointmentCreateError: boolean,
     appointmentCreateErrorReason: string,
     isCreatingAppointment: boolean,
     isAvailabilitiesGetError: boolean,
@@ -73,7 +71,7 @@ type IAppointmentsPropsDerived =
     IAppointmentsProps
     & IConnectedReduxProps<Action<any>>
     & RouteComponentProps<any>
-    & WithStyles<'root' | 'button' | 'appointmentList'>;
+    & WithStyles<'root' | 'button' | 'list'>;
 
 export default withStyles(styles)(
     withRouter(
@@ -84,12 +82,10 @@ export default withStyles(styles)(
                     appointmentCreationSuccessful: false,
                     availabilities: [],
                     createdAppointment: undefined,
-                    isAppointmentCreateError: false,
                     isAvailabilitiesGetError: false,
                     isCreatingAppointment: false,
                     selectedAvailability: undefined,
                     selectedDate: undefined,
-                    selectedDateUserText: "",
                     selectedPet: undefined,
                     selectedVet: undefined,
                 };
@@ -263,7 +259,7 @@ export default withStyles(styles)(
                                         default:
                                             reason = "Server Error";
                                     }
-                                    this.setState(prevState => R.mergeDeepRight(prevState, {isAppointmentCreateError: true, appointmentCreateErrorReason: reason}))
+                                    this.setState(prevState => R.mergeDeepRight(prevState, {appointmentCreateErrorReason: reason}))
                                 } else {
                                     this.setState(prevState => R.mergeDeepRight(prevState, {appointmentCreationSuccessful: true}))
                                 }

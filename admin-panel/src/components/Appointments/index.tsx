@@ -28,12 +28,12 @@ import SelectableListWithIndicators from "../SelectableListWithIndicators";
 
 
 const styles = (theme: Theme) => ({
-    appointmentList: {
-        maxHeight: 400,
-        overflow: 'auto'
-    },
     button: {
         margin: theme.spacing.unit,
+    },
+    list: {
+        maxHeight: 400,
+        overflow: 'auto'
     },
     root: {
         backgroundColor: theme.palette.background.paper,
@@ -68,7 +68,7 @@ type IAppointmentsPropsDerived =
     IAppointmentsProps
     & IConnectedReduxProps<Action<any>>
     & RouteComponentProps<any>
-    & WithStyles<'root' | 'button' | 'appointmentList'>;
+    & WithStyles<'root' | 'button' | 'list'>;
 
 export default withStyles(styles)(
     withRouter(

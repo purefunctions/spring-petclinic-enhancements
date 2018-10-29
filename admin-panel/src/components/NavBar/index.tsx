@@ -82,7 +82,7 @@ export default withStyles(styles)(
                         history.push('/appointments');
                         break;
                     case "/vets":
-                        history.push('vets');
+                        history.push('/vets');
                         break;
                     case "/pets":
                         history.push('/pets');

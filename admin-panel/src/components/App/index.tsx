@@ -57,7 +57,7 @@ export default class App extends React.Component<{}> {
                                         <Route path="/vets" component={Vets}/>
                                         <Route path="/pets/new" component={CreatePet}/>
                                         <Route path="/pets" component={Pets}/>
-                                        <Redirect from="/" to="/welcome"/>
+                                        <Redirect from="/" to="/appointments"/>
                                     </Switch>
                                 </div>
                             </div>

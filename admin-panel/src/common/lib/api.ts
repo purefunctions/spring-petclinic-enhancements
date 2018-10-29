@@ -1,7 +1,7 @@
 import axios, {AxiosError, AxiosResponse} from 'axios'
 import * as moment from 'moment';
 import {
-    IAppointment, IPet,
+    IAppointment, IOwner, IPet, IPetType,
     IServerErrorStatus,
     IServerGetOp,
     IServerOpFailure,
@@ -13,7 +13,8 @@ import {SERVICE_ENDPOINT} from "./config";
 const APPOINTMENTS_ROUTE = [SERVICE_ENDPOINT, "appointments"].join("/");
 const VETS_ROUTE = [SERVICE_ENDPOINT, "vets"].join("/");
 const PETS_ROUTE = [SERVICE_ENDPOINT, "pets"].join("/");
-// const OWNERS_ROUTE = [SERVICE_ENDPOINT, "owners"].join("/");
+const PET_TYPES_ROUTE = [SERVICE_ENDPOINT, "pet_types"].join("/");
+const OWNERS_ROUTE = [SERVICE_ENDPOINT, "owners"].join("/");
 const AVAILABILITIES_ROUTE = [SERVICE_ENDPOINT, "availabilities"].join("/");
 
 
@@ -75,6 +76,40 @@ export async function get_pets(
     }
 }
 
+export async function get_owners(
+    lastName?: string
+): Promise<IServerOpResult<IServerGetOp, IOwner[]>>{
+    try {
+        const response: AxiosResponse = await axios.get(
+            OWNERS_ROUTE, {
+                params: {
+                    lastName: lastName ? lastName: null,
+                }
+            }
+        );
+        return {value: response.data};
+    } catch (error) {
+        return toRequestFailure(error);
+    }
+}
+
+export async function get_pet_types(
+    name?: string
+): Promise<IServerOpResult<IServerGetOp, IPetType[]>>{
+    try {
+        const response: AxiosResponse = await axios.get(
+            PET_TYPES_ROUTE, {
+                params: {
+                    name: name ? name: null,
+                }
+            }
+        );
+        return {value: response.data};
+    } catch (error) {
+        return toRequestFailure(error);
+    }
+}
+
 export async function get_availabilities(
     vetId: number,
     date: Date
@@ -104,6 +139,25 @@ export async function post_appointments(
            APPOINTMENTS_ROUTE,
             {
                 petId, startTime, vetId
+            }
+        );
+        return {value: response.data};
+    } catch (error) {
+        return toRequestFailure(error);
+    }
+}
+
+export async function post_pets(
+    name: string,
+    birthDate: Date,
+    ownerId: number,
+    petTypeId: number
+): Promise<IServerOpResult<IServerPostOp, IPet>>{
+    try {
+        const response: AxiosResponse = await axios.post(
+           PETS_ROUTE,
+            {
+                birthDate, name, ownerId, petTypeId
             }
         );
         return {value: response.data};
