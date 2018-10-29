@@ -13,7 +13,7 @@ Note that the appointments part of the feature was not originally present in the
 ## To run the server:
 ```
 git clone https://github.com/purefunctions/spring-petclinic-enhancements
-cd spring-petclinic
+cd spring-petclinic-enhancements
 ./mvnw package
 java -jar target/*.jar
 ```
@@ -22,7 +22,7 @@ The REST API should be available in [http://localhost:8000/api/v1]()
 ## To run the client
 ```
 git clone https://github.com/purefunctions/spring-petclinic-enhancements
-cd spring-petclinic/admin-panel
+cd spring-petclinic-enhancements/admin-panel
 npm install
 npm run start
 ```
