@@ -22,15 +22,28 @@ export interface ISelectableListProps<T> {
     stringify: (item: T) => string
 }
 
-interface ISelectableListState {
+interface ISelectableListState<T> {
+    cachedListItems: T[],
     selectedIndex: number
 }
 
 type ISelectableListPropsDerived<T> = ISelectableListProps<T> & WithStyles<'root'>;
 
 export default withStyles(styles)(
-    class SelectableList<T> extends React.Component<ISelectableListPropsDerived<T>, ISelectableListState> {
+    class SelectableList<T> extends React.Component<ISelectableListPropsDerived<T>, ISelectableListState<T>> {
         public static defaultProps = SelectableList.generateDefaultProps();
+
+        public static getDerivedStateFromProps<T>(nextProps: ISelectableListProps<T>, prevState: ISelectableListState<T>) {
+            window.console.log("in getDerivedStateFromProps");
+            window.console.log(nextProps);
+            window.console.log(prevState);
+            if(nextProps.listItems.length !== prevState.cachedListItems.length) {
+                nextProps.onUnselected();
+                return {selectedIndex: -1, cachedListItems: nextProps.listItems}
+            } else {
+                return {selectedIndex: prevState.selectedIndex, cachedListItems: nextProps.listItems};
+            }
+        }
 
         private static generateDefaultProps<T>(): ISelectableListProps<T> {
             return {
@@ -41,13 +54,15 @@ export default withStyles(styles)(
             }
         }
 
-        public state: Readonly<ISelectableListState> = {
+        public state: Readonly<ISelectableListState<T>> = {
+            cachedListItems: [],
             selectedIndex: -1
         };
 
         public render() {
             const {classes, listItems, stringify} = this.props;
             const {selectedIndex} = this.state;
+            window.console.log(`selectedIndex: ${selectedIndex}`);
             return(
                 <div className={classes.root}>
                     <List component='nav'>
@@ -66,14 +81,17 @@ export default withStyles(styles)(
 
         private handleOnClick = (selectedIndex: number) => (_: any) => {
             this.setState(
-                (prevState: ISelectableListState, props: ISelectableListPropsDerived<T>) => {
+                (prevState: ISelectableListState<T>, props: ISelectableListPropsDerived<T>) => {
                     const {onSelected, onUnselected, listItems} = this.props;
                     const prevIndex = prevState.selectedIndex;
                     if (prevIndex === selectedIndex) {
                         onUnselected();
                         return R.mergeDeepRight(prevState, {selectedIndex: -1});
                     }
-                    onSelected(listItems[selectedIndex]);
+                    if (selectedIndex >= 0) {
+                        window.console.log(`calling onSelected with index ${selectedIndex} listItems.length ${listItems.length}`);
+                        onSelected(listItems[selectedIndex]);
+                    }
                     return R.mergeDeepRight(prevState, {selectedIndex});
                 }
             )

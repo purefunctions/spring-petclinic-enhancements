@@ -6,6 +6,7 @@ import org.springframework.samples.petclinic.appointment.AppointmentRepository;
 import org.springframework.samples.petclinic.appointment.AppointmentStatus;
 import org.springframework.samples.petclinic.owner.Pet;
 import org.springframework.samples.petclinic.owner.PetRepository;
+import org.springframework.samples.petclinic.service.Exceptions.BadRequestException;
 import org.springframework.samples.petclinic.service.Exceptions.EntityConflictException;
 import org.springframework.samples.petclinic.service.Exceptions.EntityNotFoundException;
 import org.springframework.samples.petclinic.service.Exceptions.InternalErrorException;
@@ -41,6 +42,10 @@ public class AppointmentService {
     @Modifying
     @Transactional
     public Appointment createNewAppointment(Integer vetId, Integer petId, LocalDateTime start, LocalDateTime end) {
+        LocalDateTime now = LocalDateTime.now();
+        if(start.isBefore(now) || end.isBefore(now)) {
+            throw new BadRequestException("Attempt to make an appointment in the past");
+        }
         Appointment newAppointment = new Appointment();
         Pet pet = petRepository.findById(petId);
         Vet vet = vetRepository.findById(vetId);
@@ -77,7 +82,7 @@ newAppointment.setStartTime(start);
 
     @Transactional
     public Collection<LocalDateTime> findAvailableSlotsOnDateByVetId(Integer vetId, LocalDate date) {
-        if (isWeekend(date)) {
+        if (isWeekend(date) || date.isBefore(LocalDate.now())) {
             return new ArrayList<>();
         }
 
@@ -197,7 +202,7 @@ newAppointment.setStartTime(start);
             return IntStream.empty().boxed();
         }
         Integer startIndex = getSlotIndexByTime(startTime).orElse(0);
-        Integer endIndex = getSlotIndexByTime(endTime).orElse((9 * 60 / APPOINTMENT_DURATION_MINUTES) - 1);
+        Integer endIndex = getSlotIndexByTime(endTime.minusMinutes(1)).orElse((9 * 60 / APPOINTMENT_DURATION_MINUTES) - 1);
         return IntStream.range(startIndex, endIndex + 1).boxed();
     }
 }

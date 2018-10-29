@@ -13,7 +13,7 @@ const styles = (theme: Theme) => ({
     } as CSSProperties
 });
 
-type routeType = '/welcome' | '/appointments' | '/pets' | '/vets';
+type routeType = '/appointments' | '/pets' | '/vets';
 
 interface INavBarProps {
     [x:string]: any
@@ -35,7 +35,7 @@ export default withStyles(styles)(
     withRouter(
         class Navigation extends React.Component<INavigationPropsDerived, INavBarState> {
             public state: INavBarState = {
-                currentRoute: "/welcome"
+                currentRoute: "/appointments"
             };
 
             public componentWillReceiveProps(nextProps: INavigationPropsDerived) {
@@ -53,7 +53,6 @@ export default withStyles(styles)(
                 return (
                     <div>
                         <Tabs value={'/' + currentRoute.split("/").slice(1, 2)} onChange={this.handleChange}>
-                            <Tab label='Welcome' value="/welcome"/>
                             <Tab label='Appointments' value="/appointments"/>
                             <Tab label='Vets' value="/vets"/>
                             <Tab label='Pets' value="/pets"/>
@@ -79,9 +78,6 @@ export default withStyles(styles)(
             private pushRoute(route: routeType) {
                 const {history} = this.props;
                 switch(route) {
-                    case "/welcome":
-                        history.push('/welcome');
-                        break;
                     case "/appointments":
                         history.push('/appointments');
                         break;

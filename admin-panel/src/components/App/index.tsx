@@ -15,9 +15,12 @@ import CreateVet from "../CreateVet/index";
 import Navigation from "../NavBar/index";
 import Pets from "../Pets/index";
 import Vets from "../Vets/index";
-import WelcomeView from "../Welcome/index";
 
-const appTheme = createMuiTheme({});
+const appTheme = createMuiTheme({
+    typography: {
+        useNextVariants: true
+    }
+});
 
 // Because we are decorating our LoginView component with, redux props (which gives dispatch property)
 // the end type of the props for our component is a typescript intersection type
@@ -48,7 +51,6 @@ export default class App extends React.Component<{}> {
                                 </header>
                                 <div>
                                     <Switch>
-                                        <Route path="/welcome" component={WelcomeView}/>
                                         <Route path="/appointments/new" component={CreateAppointment}/>
                                         <Route path="/appointments" component={Appointments}/>
                                         <Route path="/vets/new" component={CreateVet}/>

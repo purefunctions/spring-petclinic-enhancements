@@ -51,7 +51,7 @@ public interface AppointmentRepository extends Repository<Appointment, Integer> 
         @Param("petId") Integer petId
     );
 
-    @Query("SELECT appt FROM Appointment appt WHERE (:intervalStart <= appt.endTime OR :intervalEnd <= appt.startTime) AND appt.vet.id = :vetId  AND appt.status = :status ORDER BY appt.status ASC, appt.startTime ASC")
+    @Query("SELECT appt FROM Appointment appt WHERE (appt.startTime < :intervalEnd AND appt.endTime > :intervalStart) AND appt.vet.id = :vetId  AND appt.status = :status ORDER BY appt.status ASC, appt.startTime ASC")
     @Transactional(readOnly = true)
     Collection<Appointment> findAppointmentsDuringTimeIntervalAndVetId(
         @Param("intervalStart") LocalDateTime intervalStart,
@@ -60,7 +60,7 @@ public interface AppointmentRepository extends Repository<Appointment, Integer> 
         @Param("vetId") Integer vetId
     );
 
-    @Query("SELECT COUNT(appt) FROM Appointment appt WHERE (:intervalStart <= appt.endTime OR :intervalEnd <= appt.startTime) AND appt.vet.id = :vetId  AND appt.status = :status")
+    @Query("SELECT COUNT(appt) FROM Appointment appt WHERE (appt.startTime < :intervalEnd AND appt.endTime > :intervalStart) AND appt.vet.id = :vetId  AND appt.status = :status")
     @Transactional(readOnly = true)
     Long countAppointmentsDuringTimeIntervalAndVetId(
         @Param("intervalStart") LocalDateTime intervalStart,
@@ -69,7 +69,7 @@ public interface AppointmentRepository extends Repository<Appointment, Integer> 
         @Param("vetId") Integer vetId
     );
 
-    @Query("SELECT COUNT(appt) FROM Appointment appt WHERE (:intervalStart <= appt.endTime OR :intervalEnd <= appt.startTime) AND appt.pet.id = :petId  AND appt.status = :status")
+    @Query("SELECT COUNT(appt) FROM Appointment appt WHERE (appt.startTime < :intervalEnd AND appt.endTime > :intervalStart) AND appt.pet.id = :petId  AND appt.status = :status")
     @Transactional(readOnly = true)
     Long countAppointmentsDuringTimeIntervalAndPetId(
         @Param("intervalStart") LocalDateTime intervalStart,

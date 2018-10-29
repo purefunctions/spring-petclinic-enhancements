@@ -5,10 +5,7 @@ import * as React from 'react';
 import * as API from "../../common/lib/util";
 import {IServerGetOp, IServerOpResult} from "../../common/types";
 import SearchBar from "../SearchBar"
-import SelectableList, {ISelectableListProps} from "../SelectableList"
-import {withEmptyListIndicator} from "../Utils/WithEmptyListIndicator";
-import {withErrorIndicator} from "../Utils/WithErrorIndicator";
-import {withLoadingIndicator} from "../Utils/WithLoadingIndicator";
+import SelectableListWithIndicators from "../SelectableListWithIndicators"
 
 const styles = (theme: Theme) => ({
     root: {
@@ -18,12 +15,7 @@ const styles = (theme: Theme) => ({
     } as CSSProperties,
 });
 
-const emptyListIndicatorComponent : React.ComponentType = (props) => <p>"Empty"</p>;
-const errorIndicatorComponent : React.ComponentType = (props) => <p>"Error"</p>;
-const loadingIndicatorComponent : React.ComponentType = (props) => <p>"Loading..."</p>;
-
-
-interface ISearchBasedEntitySelectorProps<T> {
+interface ISearchSelectableListWithIndicatorsProps<T> {
     searchLabel: string,
     onSearchSubmit: (text: string) => Promise<IServerOpResult<IServerGetOp, T[]>>,
     onSelected: (item: T) => any,
@@ -31,18 +23,18 @@ interface ISearchBasedEntitySelectorProps<T> {
     stringify: (item: T) => string
 }
 
-interface ISearchBasedEntitySelectorState<T> {
+interface ISearchSelectableListWithIndicatorsState<T> {
     isSearching: boolean,
     isError: boolean,
     searchResultItems: T[],
 }
 
-type ISearchBasedEntitySelectorPropsDerived<T> = ISearchBasedEntitySelectorProps<T> & WithStyles<'root'>;
+type ISearchSelectableListWithIndicatorsPropsDerived<T> = ISearchSelectableListWithIndicatorsProps<T> & WithStyles<'root'>;
 
 export default withStyles(styles)(
-    class SearchBasedEntitySelector<T> extends React.Component<ISearchBasedEntitySelectorPropsDerived<T>, ISearchBasedEntitySelectorState<T>> {
-        public static defaultProps= SearchBasedEntitySelector.getDefaultProps();
-        private static getDefaultProps<T>() : ISearchBasedEntitySelectorProps<T> {
+    class SearchSelectableListWithIndicators<T> extends React.Component<ISearchSelectableListWithIndicatorsPropsDerived<T>, ISearchSelectableListWithIndicatorsState<T>> {
+        public static defaultProps= SearchSelectableListWithIndicators.getDefaultProps();
+        private static getDefaultProps<T>() : ISearchSelectableListWithIndicatorsProps<T> {
             return {
                 onSearchSubmit: async (_: string) => ({value: []}),
                 onSelected: (_: T) => undefined,
@@ -52,20 +44,11 @@ export default withStyles(styles)(
             }
         }
 
-        public state: ISearchBasedEntitySelectorState<T> = {
+        public state: ISearchSelectableListWithIndicatorsState<T> = {
             isError: false,
             isSearching: false,
             searchResultItems: []
         };
-
-        // TODO: figure out a way to not make any the type parameter
-        private SelectableListWithIndicators: React.ComponentType<any> = withEmptyListIndicator<ISelectableListProps<T>, T>(emptyListIndicatorComponent,
-            withLoadingIndicator(loadingIndicatorComponent,
-                withErrorIndicator(
-                    errorIndicatorComponent,
-                    (props) => <SelectableList {...props}/>
-                )));
-
 
         public render() {
             const {searchLabel, classes, stringify, onUnSelected, onSelected} = this.props;
@@ -73,7 +56,7 @@ export default withStyles(styles)(
             return(
                     <div className={classes.root}>
                         <SearchBar label={searchLabel} onSubmit={this.handleSearchSubmit} />
-                        <this.SelectableListWithIndicators listItems={searchResultItems}
+                        <SelectableListWithIndicators listItems={searchResultItems}
                                                            isLoading={isSearching}
                                                            isError={isError}
                                                            onSelected={onSelected}

@@ -69,6 +69,7 @@ export interface IServerOpFailure {
 export enum IServerErrorStatus {
     RESOURCE_NOT_FOUND,
     BAD_REQUEST,
+    CONFLICT,
     SERVER_ERROR,
     UNKNOWN_ERROR,
     NETWORK_ERROR
