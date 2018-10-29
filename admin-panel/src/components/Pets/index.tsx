@@ -1,5 +1,6 @@
 import {Theme} from "@material-ui/core";
 import withStyles, {CSSProperties, WithStyles} from "@material-ui/core/styles/withStyles";
+import Typography from "@material-ui/core/Typography/Typography";
 import * as React from 'react';
 import {RouteComponentProps, withRouter} from "react-router";
 
@@ -24,7 +25,9 @@ export default withStyles(styles)(
             public render() {
                 return (
                     <div className="root">
-                        <p>The pets component</p>
+                        <Typography variant='overline'>
+                            Pets - To be implemented
+                        </Typography>
                     </div>
                 )
             }

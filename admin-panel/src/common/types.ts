@@ -17,6 +17,7 @@ export interface IVet {
 export interface IPet {
     id: number,
     name: string,
+    birthDate: Date,
     type: IPetType,
     owner: IOwner
 }

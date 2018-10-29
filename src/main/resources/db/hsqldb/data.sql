@@ -56,7 +56,7 @@ INSERT INTO appointment_statuses VALUES (1, 'scheduled');
 INSERT INTO appointment_statuses VALUES (2, 'canceled');
 INSERT INTO appointment_statuses VALUES (3, 'visited');
 
-INSERT INTO appointments VALUES (1, 1, 1, 1, '2018-10-22 08:00:00', '2018-10-22 08:30:00');
-INSERT INTO appointments VALUES (2, 1, 1, 1, '2018-10-22 08:30:00', '2018-10-22 09:00:00');
-INSERT INTO appointments VALUES (3, 1, 1, 1, '2018-10-22 12:00:00', '2018-10-22 13:30:00');
-INSERT INTO appointments VALUES (4, 1, 1, 1, '2018-10-22 13:00:00', '2018-10-22 13:30:00');
+INSERT INTO appointments VALUES (1, 1, 1, 1, '2018-10-31 08:00:00', '2018-10-31 08:30:00');
+INSERT INTO appointments VALUES (2, 1, 1, 1, '2018-10-31 08:30:00', '2018-10-31 09:00:00');
+INSERT INTO appointments VALUES (3, 1, 1, 1, '2018-10-31 12:00:00', '2018-10-31 13:30:00');
+INSERT INTO appointments VALUES (4, 1, 1, 1, '2018-10-31 13:00:00', '2018-10-31 13:30:00');

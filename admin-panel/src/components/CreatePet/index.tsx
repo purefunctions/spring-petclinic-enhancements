@@ -13,7 +13,7 @@ const styles = (theme: Theme) => ({
 });
 
 interface ICreatePetProps {
-    dummy: any
+    [x: string]: any
 }
 
 type ICreatePetsPropsDerived = ICreatePetProps & RouteComponentProps<any> & WithStyles<'root'>;
