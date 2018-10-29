@@ -43,6 +43,10 @@ export function petTypeToSummaryString(petType: IPetType) {
     return petType.name;
 }
 
+export function vetSpecialtyToSummaryString(specialty: ISpecialty) {
+    return specialty.name;
+}
+
 export function dateTimeToUSString(date: Date) {
     return moment(date).format("MMM DD YYYY, HH:mm")
 }

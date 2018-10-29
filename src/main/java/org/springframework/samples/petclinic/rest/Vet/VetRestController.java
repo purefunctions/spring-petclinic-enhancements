@@ -24,8 +24,8 @@ public class VetRestController {
         return vetService.findByLastLame(lastName.orElse(""));
     }
 
-    @GetMapping(value = "/api/v1/vet_specialities", produces = MediaType.APPLICATION_JSON_VALUE)
-    Collection<Specialty> findSpecialities(@RequestParam Optional<String> name) {
+    @GetMapping(value = "/api/v1/vet_specialties", produces = MediaType.APPLICATION_JSON_VALUE)
+    Collection<Specialty> findSpecialties(@RequestParam Optional<String> name) {
         return vetService.findVetSpecialities(name.orElse(""));
     }
 

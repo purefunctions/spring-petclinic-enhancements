@@ -5,13 +5,14 @@ import {
     IServerErrorStatus,
     IServerGetOp,
     IServerOpFailure,
-    IServerOpResult, IServerPostOp,
+    IServerOpResult, IServerPostOp, ISpecialty,
     IVet
 } from "../types";
 import {SERVICE_ENDPOINT} from "./config";
 
 const APPOINTMENTS_ROUTE = [SERVICE_ENDPOINT, "appointments"].join("/");
 const VETS_ROUTE = [SERVICE_ENDPOINT, "vets"].join("/");
+const VET_SPECIALTIES_ROUTE = [SERVICE_ENDPOINT, "vet_specialties"].join("/");
 const PETS_ROUTE = [SERVICE_ENDPOINT, "pets"].join("/");
 const PET_TYPES_ROUTE = [SERVICE_ENDPOINT, "pet_types"].join("/");
 const OWNERS_ROUTE = [SERVICE_ENDPOINT, "owners"].join("/");
@@ -50,6 +51,23 @@ export async function get_vets(
             VETS_ROUTE, {
                 params: {
                     lastName: lastName ? lastName: null,
+                }
+            }
+        );
+        return {value: response.data};
+    } catch (error) {
+        return toRequestFailure(error);
+    }
+}
+
+export async function get_vet_specialties(
+    name?: string,
+): Promise<IServerOpResult<IServerGetOp, ISpecialty[]>>{
+    try {
+        const response: AxiosResponse = await axios.get(
+            VET_SPECIALTIES_ROUTE, {
+                params: {
+                    name: name ? name: null,
                 }
             }
         );
@@ -158,6 +176,24 @@ export async function post_pets(
            PETS_ROUTE,
             {
                 birthDate, name, ownerId, petTypeId
+            }
+        );
+        return {value: response.data};
+    } catch (error) {
+        return toRequestFailure(error);
+    }
+}
+
+export async function post_vets(
+    firstName: string,
+    lastName: string,
+    specialtyIds: number[]
+): Promise<IServerOpResult<IServerPostOp, IVet>>{
+    try {
+        const response: AxiosResponse = await axios.post(
+            VETS_ROUTE,
+            {
+                firstName, lastName, specialtyIds
             }
         );
         return {value: response.data};
