@@ -29,6 +29,7 @@ npm run start
 The client should be available in [http://localhost:3000]()
 
 NOTE: Development and testing was done in Windows, but there should be no reason it won't work elsewhere.
+NOTE: The source is also available in bitbucket at [https://bitbucket.org/purefunctions/spring-petclinic-enhancements]()
 
 # Overall notes on the implementation
 * Main purpose of implementation was as a learning experience and to show how certain parts of the concepts in frameworks can be used
