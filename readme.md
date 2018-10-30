@@ -63,6 +63,7 @@ NOTE: The source is also available in bitbucket at [https://bitbucket.org/purefu
 
 # If I had more time...
 * Proper HTTP status codes (e.g. 201 for POST, etc) - didn't have time to figure out per route HTTP status codes in Spring
+* Proper key selection in react list components (currently just uses index which might cause inconsistent state and/or performance issues)
 * Individual Vet availability schedules and an interface to update the schedules
 * Calendar components
 * Unit tests
